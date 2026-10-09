@@ -15,7 +15,6 @@ Week 4 project: harden a small MERN web app (MongoDB, Express, React, Node) for 
 ## 2. Folder layout
 
 ```
-studio-app/
   server/
     app.js            Express app: security headers, CORS, CSRF, rate limits, routes, error handler
     server.js         Connects to MongoDB, then starts the server
@@ -26,7 +25,7 @@ studio-app/
     models/           Project.js, Message.js, User.js
     tests/            security-check.mjs (manual test script)
   client/             React (Vite) front end
-  docs/rescan-results.md   Before / after comparison sheet
+  rescan-results.md   Before / after comparison sheet
   CHANGELOG.md
 ```
 
