@@ -6,7 +6,12 @@ function Gallery() {
 
   useEffect(() => {
     fetch("/api/projects")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Server returned an error");
+        }
+        return res.json();
+      })
       .then((data) => setProjects(data))
       .catch(() => setError("Could not load projects"));
   }, []);

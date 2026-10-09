@@ -1,6 +1,7 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
+import { config } from "../config.js";
 
-// Checks the "token" cookie. If it is valid, the request can continue.
+// Checks the "token" cookie. Only a valid token that belongs to an admin can continue.
 function requireAdmin(req, res, next) {
   const token = req.cookies.token;
 
@@ -9,12 +10,17 @@ function requireAdmin(req, res, next) {
   }
 
   try {
-    const data = jwt.verify(token, process.env.JWT_SECRET);
+    const data = jwt.verify(token, config.jwtSecret, { algorithms: ["HS256"] });
+
+    if (data.role !== "admin") {
+      return res.status(403).json({ error: "You are not allowed to do this" });
+    }
+
     req.user = data;
     next();
   } catch (err) {
-    return res.status(401).json({ error: "Invalid token" });
+    return res.status(401).json({ error: "Invalid or expired login" });
   }
 }
 
-module.exports = requireAdmin;
+export default requireAdmin;

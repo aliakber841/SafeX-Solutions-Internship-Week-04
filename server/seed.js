@@ -1,9 +1,10 @@
-require("dotenv").config();
+import "dotenv/config";
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
+import Project from "./models/Project.js";
+import User from "./models/User.js";
 
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
-const Project = require("./models/Project");
-const User = require("./models/User");
+// Adds sample projects and the admin user to the database named in MONGO_URI.
 
 const projects = [
   {
@@ -51,26 +52,44 @@ const projects = [
 ];
 
 async function run() {
-  await mongoose.connect(process.env.MONGO_URI);
-  console.log("Connected to MongoDB");
+  const mongoUri = process.env.MONGO_URI;
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+
+  if (!mongoUri) {
+    throw new Error("MONGO_URI is missing in .env");
+  }
+
+  if (!adminEmail || !adminPassword) {
+    throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD must be set in .env");
+  }
+
+  if (adminPassword.length < 12) {
+    throw new Error("ADMIN_PASSWORD must be at least 12 characters");
+  }
+
+  await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 10000 });
+  console.log("Connected to MongoDB database: " + mongoose.connection.name);
 
   await Project.deleteMany({});
   await Project.insertMany(projects);
   console.log("Added " + projects.length + " projects");
 
-  const adminEmail = process.env.ADMIN_EMAIL;
-  const adminPassword = process.env.ADMIN_PASSWORD;
+  const hash = await bcrypt.hash(adminPassword, 12);
+  const email = adminEmail.trim().toLowerCase();
 
-  await User.deleteMany({ email: adminEmail });
-  const hash = await bcrypt.hash(adminPassword, 10);
-  await User.create({ email: adminEmail, passwordHash: hash, role: "admin" });
-  console.log("Admin user ready: " + adminEmail);
+  await User.findOneAndUpdate(
+    { email: email },
+    { email: email, passwordHash: hash, role: "admin" },
+    { upsert: true }
+  );
+  console.log("Admin user ready: " + email);
 
   await mongoose.disconnect();
   console.log("Done");
 }
 
-run().catch((err) => {
-  console.log("Seed failed:", err.message);
+run().catch(function (err) {
+  console.error("Seed failed:", err.message);
   process.exit(1);
 });

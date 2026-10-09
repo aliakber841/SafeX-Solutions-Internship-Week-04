@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { postJson, readError } from "../api.js";
 
 function Login(props) {
   const [email, setEmail] = useState("");
@@ -11,19 +12,17 @@ function Login(props) {
     event.preventDefault();
     setError("");
 
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email, password: password }),
-    });
+    try {
+      const result = await postJson("/api/auth/login", { email: email, password: password });
 
-    const data = await res.json();
-
-    if (res.ok) {
-      props.onLogin(data.email);
-      navigate("/admin");
-    } else {
-      setError(data.error);
+      if (result.ok) {
+        props.onLogin(result.data.email);
+        navigate("/admin");
+      } else {
+        setError(readError(result.data));
+      }
+    } catch (err) {
+      setError("Could not reach the server");
     }
   }
 
@@ -34,12 +33,12 @@ function Login(props) {
       <form className="form" onSubmit={handleSubmit}>
         <label>
           Email
-          <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input type="email" value={email} maxLength={120} onChange={(e) => setEmail(e.target.value)} />
         </label>
 
         <label>
           Password
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input type="password" value={password} maxLength={128} onChange={(e) => setPassword(e.target.value)} />
         </label>
 
         <button type="submit" className="button">

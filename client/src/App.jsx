@@ -5,6 +5,7 @@ import Gallery from "./pages/Gallery.jsx";
 import Contact from "./pages/Contact.jsx";
 import Login from "./pages/Login.jsx";
 import Admin from "./pages/Admin.jsx";
+import { postJson } from "./api.js";
 
 function App() {
   const [adminEmail, setAdminEmail] = useState("");
@@ -27,7 +28,7 @@ function App() {
   }, []);
 
   async function handleLogout() {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await postJson("/api/auth/logout", {});
     setAdminEmail("");
     navigate("/");
   }

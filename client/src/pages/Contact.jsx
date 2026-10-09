@@ -1,30 +1,33 @@
 import React, { useState } from "react";
+import { postJson, readError } from "../api.js";
 
 function Contact() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState("");
+  const [isError, setIsError] = useState(false);
 
   async function handleSubmit(event) {
     event.preventDefault();
+    setIsError(false);
     setStatus("Sending...");
 
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: name, email: email, message: message }),
-    });
+    try {
+      const result = await postJson("/api/contact", { name: name, email: email, message: message });
 
-    const data = await res.json();
-
-    if (res.ok) {
-      setStatus(data.message);
-      setName("");
-      setEmail("");
-      setMessage("");
-    } else {
-      setStatus("Something went wrong: " + data.error);
+      if (result.ok) {
+        setStatus(result.data.message);
+        setName("");
+        setEmail("");
+        setMessage("");
+      } else {
+        setIsError(true);
+        setStatus(readError(result.data));
+      }
+    } catch (err) {
+      setIsError(true);
+      setStatus("Could not reach the server");
     }
   }
 
@@ -36,17 +39,17 @@ function Contact() {
       <form className="form" onSubmit={handleSubmit}>
         <label>
           Name
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+          <input type="text" value={name} maxLength={80} onChange={(e) => setName(e.target.value)} />
         </label>
 
         <label>
           Email
-          <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input type="email" value={email} maxLength={120} onChange={(e) => setEmail(e.target.value)} />
         </label>
 
         <label>
           Message
-          <textarea rows="5" value={message} onChange={(e) => setMessage(e.target.value)} />
+          <textarea rows="5" value={message} maxLength={1000} onChange={(e) => setMessage(e.target.value)} />
         </label>
 
         <button type="submit" className="button">
@@ -54,7 +57,7 @@ function Contact() {
         </button>
       </form>
 
-      {status && <p className="status">{status}</p>}
+      {status && <p className={isError ? "error" : "status"}>{status}</p>}
     </div>
   );
 }

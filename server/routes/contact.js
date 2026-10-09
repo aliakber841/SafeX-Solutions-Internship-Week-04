@@ -1,13 +1,20 @@
-const express = require("express");
-const Message = require("../models/Message");
-const requireAdmin = require("../middleware/requireAdmin");
+import express from "express";
+import Message from "../models/Message.js";
+import requireAdmin from "../middleware/requireAdmin.js";
+import { contactLimiter } from "../middleware/rateLimiters.js";
+import { validateBody, contactSchema } from "../middleware/validate.js";
 
 const router = express.Router();
 
-// POST /api/contact  -> anyone can send a message
-router.post("/", async (req, res, next) => {
+// POST /api/contact  -> anyone can send a message (limited and validated)
+router.post("/", contactLimiter, validateBody(contactSchema), async (req, res, next) => {
   try {
-    const saved = await Message.create(req.body);
+    const saved = await Message.create({
+      name: req.body.name,
+      email: req.body.email,
+      message: req.body.message,
+    });
+
     res.status(201).json({ message: "Thank you, we received your message", id: saved._id });
   } catch (err) {
     next(err);
@@ -24,4 +31,4 @@ router.get("/", requireAdmin, async (req, res, next) => {
   }
 });
 
-module.exports = router;
+export default router;

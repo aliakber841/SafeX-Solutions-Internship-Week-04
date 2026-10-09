@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// During development, requests to /api go to the Express server on port 5000.
+// During development, requests to /api go to the Express server on port 5001.
 export default defineConfig({
   plugins: [react()],
   server: {
