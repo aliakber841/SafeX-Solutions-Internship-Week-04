@@ -1,0 +1,175 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #2b2b2b;
+  background: #faf8f5;
+  line-height: 1.5;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 16px 32px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e0d8;
+}
+
+.logo {
+  margin: 0;
+  font-size: 22px;
+  color: #6b4f3a;
+}
+
+.nav {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.nav a {
+  color: #2b2b2b;
+  text-decoration: none;
+}
+
+.nav a:hover {
+  color: #6b4f3a;
+  text-decoration: underline;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: #2b2b2b;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 20px;
+  min-height: 70vh;
+}
+
+.footer {
+  text-align: center;
+  padding: 20px;
+  background: #ffffff;
+  border-top: 1px solid #e5e0d8;
+  color: #6f6a62;
+}
+
+.hero {
+  padding: 40px 0;
+}
+
+.hero h2 {
+  font-size: 34px;
+  margin-bottom: 10px;
+}
+
+.button {
+  display: inline-block;
+  background: #6b4f3a;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: #543d2c;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #ffffff;
+  padding: 20px;
+  border: 1px solid #e5e0d8;
+  border-radius: 6px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.project {
+  background: #ffffff;
+  padding: 16px;
+  border: 1px solid #e5e0d8;
+  border-radius: 6px;
+}
+
+.project-picture {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #d9cbb8;
+  color: #54402e;
+  font-weight: bold;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.small {
+  font-size: 14px;
+  color: #6f6a62;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 480px;
+  margin: 20px 0;
+}
+
+.form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: bold;
+}
+
+.form input,
+.form textarea {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #c9c2b6;
+  border-radius: 4px;
+  font-family: inherit;
+}
+
+.status {
+  color: #2f6b3a;
+}
+
+.error {
+  color: #a32222;
+}
+
+.message {
+  background: #ffffff;
+  border: 1px solid #e5e0d8;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+}
